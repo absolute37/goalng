@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  # noname_database:
+  #   build: mongo/
+  #   ports:
+  #     - 6077:27017
+  #   volumes:
+  #     - ./mongo/data_json:/data/db_import/
+  #   container_name: noname_database
+  noname_api:
+    build: go/
+    ports:
+      - 56121:80
+    volumes:
+      - ./../src/:/go/src/
+      - $GOPATH/pkg/mod/cache:/go/pkg/mod/cache
+    container_name: noname_api
+    links:
+      # - noname_database
+      - noname_database_postgres
+    entrypoint: sh /root/entrypoint.sh
+  noname_database_postgres:
+    build: postgres/
+    container_name: noname_database
+    ports:
+      - 1112:5432
+    environment:
+      POSTGRES_PASSWORD: okpme5^d
+      POSTGRES_USER: okpme5^d
+      POSTGRES_DB: no_name_db
